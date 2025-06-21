@@ -50,6 +50,10 @@ export default defineConfig({
       vueTemplate: true,
     }),
   ],
+  base: process.env.ELECTRON == "true" ? './' : '/',
+  build: {
+    outDir: 'dist',
+  },
   optimizeDeps: {
     exclude: [
       'vuetify',
@@ -75,7 +79,7 @@ export default defineConfig({
     ],
   },
   server: {
-    port: 3000,
+    port: 5173,
   },
   css: {
     preprocessorOptions: {
