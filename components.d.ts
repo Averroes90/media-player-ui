@@ -10,9 +10,11 @@ declare module 'vue' {
   export interface GlobalComponents {
     AppFooter: typeof import('./src/components/AppFooter.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    MediaControls: typeof import('./src/components/VideoPlayer/MediaControls.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SubtitleControls: typeof import('./src/components/SubtitleManager/SubtitleControls.vue')['default']
+    SubtitleOverlay: typeof import('./src/components/VideoPlayer/SubtitleOverlay.vue')['default']
     SubtitleTrack: typeof import('./src/components/SubtitleManager/SubtitleTrack.vue')['default']
     VideoPlayer: typeof import('./src/components/VideoPlayer/VideoPlayer.vue')['default']
   }
