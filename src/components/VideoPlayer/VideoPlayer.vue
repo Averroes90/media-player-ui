@@ -2,19 +2,19 @@
   <v-container fluid class="pa-0">
     <div class="media-player-container" ref="playerContainer">
       <!-- Video Display Area (MPV renders here) -->
-      <div 
+      <div
         class="video-display"
         @drop="handleDrop"
         @dragover.prevent
         @dragenter.prevent
       >
         <!-- Subtitle Overlay -->
-        <SubtitleOverlay 
+        <SubtitleOverlay
           :subtitles="subtitleTracks"
           :current-time="playbackState.currentTime"
           :video-dimensions="videoDimensions"
         />
-        
+
         <!-- Loading State -->
         <div v-if="loading" class="loading-overlay">
           <v-progress-circular indeterminate size="64" />
@@ -62,7 +62,7 @@ const playbackState = reactive({
   playing: false,
   currentTime: 0,
   duration: 0,
-  volume: 100
+  volume: 100,
 });
 
 // Refs
@@ -91,32 +91,46 @@ async function initializePlayer() {
 
 function setupEventListeners() {
   // Playback events
-  const timeUpdateCleanup = window.electronAPI.onPlaybackTimeUpdate((event, time) => {
-    playbackState.currentTime = time;
-  });
-  
-  const durationUpdateCleanup = window.electronAPI.onPlaybackDurationUpdate((event, duration) => {
-    playbackState.duration = duration;
-  });
-  
-  const stateChangeCleanup = window.electronAPI.onPlaybackStateChange((event, state) => {
-    Object.assign(playbackState, state);
-  });
-  
-  const subtitlesLoadedCleanup = window.electronAPI.onSubtitlesLoaded((event, subs) => {
-    subtitleTracks.value.push(...subs);
-  });
+  const timeUpdateCleanup = window.electronAPI.onPlaybackTimeUpdate(
+    (event, time) => {
+      playbackState.currentTime = time;
+    }
+  );
 
+  const durationUpdateCleanup = window.electronAPI.onPlaybackDurationUpdate(
+    (event, duration) => {
+      playbackState.duration = duration;
+    }
+  );
+
+  const stateChangeCleanup = window.electronAPI.onPlaybackStateChange(
+    (event, state) => {
+      Object.assign(playbackState, state);
+    }
+  );
+
+  const subtitlesLoadedCleanup = window.electronAPI.onSubtitlesLoaded(
+    (event, subs) => {
+      subtitleTracks.value.push(...subs);
+    }
+  );
+  const fileIssueCleanup = window.electronAPI.onFileIssue((event, issue) => {
+    // Show user-friendly error
+    console.error('File issue:', issue);
+    // Could show a notification or modal
+  });
   cleanupFunctions.push(
     timeUpdateCleanup,
     durationUpdateCleanup,
     stateChangeCleanup,
     subtitlesLoadedCleanup
   );
+
+  cleanupFunctions.push(fileIssueCleanup);
 }
 
 function cleanupEventListeners() {
-  cleanupFunctions.forEach(cleanup => cleanup());
+  cleanupFunctions.forEach((cleanup) => cleanup());
   cleanupFunctions = [];
 }
 
@@ -172,7 +186,7 @@ async function setVolume(volume) {
 }
 
 function toggleSubtitle(subtitleId) {
-  const subtitle = subtitleTracks.value.find(s => s.id === subtitleId);
+  const subtitle = subtitleTracks.value.find((s) => s.id === subtitleId);
   if (subtitle) {
     subtitle.enabled = !subtitle.enabled;
   }
@@ -181,17 +195,17 @@ function toggleSubtitle(subtitleId) {
 async function handleDrop(event) {
   event.preventDefault();
   const files = Array.from(event.dataTransfer.files);
-  const filePaths = files.map(file => file.path);
-  
+  const filePaths = files.map((file) => file.path);
+
   try {
     loading.value = true;
     const result = await window.electronAPI.handleFileDrop(filePaths);
-    
+
     if (result.videos.length > 0) {
       currentVideo.value = result.videos[0].filePath;
       playbackState.duration = result.videos[0].duration;
     }
-    
+
     if (result.subtitles.length > 0) {
       subtitleTracks.value.push(...result.subtitles);
     }
@@ -201,6 +215,19 @@ async function handleDrop(event) {
     loading.value = false;
   }
 }
+/////rust test
+const rustMessage = ref('');
+const systemInfo = ref('');
+
+const testRust = async () => {
+  try {
+    rustMessage.value = await window.nativeAPI.helloFromRust();
+    systemInfo.value = await window.nativeAPI.getSystemInfo();
+    console.log('Rust functions working!');
+  } catch (error) {
+    console.error('Rust test failed:', error);
+  }
+};
 </script>
 
 <style scoped>

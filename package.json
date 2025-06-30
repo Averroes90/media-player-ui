@@ -10,12 +10,14 @@
     "preview": "vite preview",
     "lint": "eslint . --fix",
     "electron": "electron .",
-    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5174 && electron .\"",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
     "build:electron": "npm run build && electron-builder",
     "dist": "npm run build && electron-builder --publish=never",
     "format": "prettier --write \"src/**/*.{js,vue,ts,css,scss,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,vue,ts,css,scss,json,md}\"",
-    "lint:fix": "eslint --ext .js,.vue src --fix"
+    "lint:fix": "eslint --ext .js,.vue src --fix",
+    "build:native": "cd native && napi build --platform --release",
+    "build:native:dev": "cd native && napi build --platform"
   },
   "build": {
     "appId": "com.rami.media-player",
@@ -35,11 +37,11 @@
     "@fontsource/roboto": "5.2.5",
     "@mdi/font": "7.4.47",
     "chokidar": "^4.0.3",
-    "node-mpv": "^1.5.0",
     "vue": "^3.5.13",
     "vuetify": "^3.8.1"
   },
   "devDependencies": {
+    "@napi-rs/cli": "^2.18.4",
     "@vitejs/plugin-vue": "^5.2.3",
     "concurrently": "^9.1.2",
     "electron": "^36.5.0",

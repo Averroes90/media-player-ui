@@ -58,6 +58,10 @@
             hide-details
           />
         </div>
+        <SpeedControl 
+  :speed="playbackState.speed || 1.0"
+  @speed-change="handleSpeedChange"
+/>
       </div>
 
       <!-- Right Controls -->
@@ -133,7 +137,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-
+import SpeedControl from './SpeedControl.vue'
 const props = defineProps({
   playbackState: {
     type: Object,
@@ -151,7 +155,8 @@ const emit = defineEmits([
   'volume-change',
   'open-video',
   'open-subtitles',
-  'toggle-subtitle'
+  'toggle-subtitle',
+  'speed-change'
 ])
 
 // Local state
@@ -197,6 +202,9 @@ function handleVolumeChange(value) {
   muted.value = value === 0
   emit('volume-change', value)
 }
+function handleSpeedChange(speed) {
+  emit('speed-change', speed)
+}
 
 function toggleMute() {
   if (muted.value) {
@@ -223,7 +231,6 @@ function formatTime(seconds) {
   return `${mins}:${secs.toString().padStart(2, '0')}`
 }
 </script>
-
 <style scoped>
 .media-controls {
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));

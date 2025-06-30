@@ -13,6 +13,7 @@ declare module 'vue' {
     MediaControls: typeof import('./src/components/VideoPlayer/MediaControls.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SpeedControl: typeof import('./src/components/VideoPlayer/SpeedControl.vue')['default']
     SubtitleControls: typeof import('./src/components/SubtitleManager/SubtitleControls.vue')['default']
     SubtitleOverlay: typeof import('./src/components/VideoPlayer/SubtitleOverlay.vue')['default']
     SubtitleTrack: typeof import('./src/components/SubtitleManager/SubtitleTrack.vue')['default']
